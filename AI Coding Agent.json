@@ -1,0 +1,210 @@
+{
+  "name": "AI Coding Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "public": true,
+        "initialMessages": "Hi! I'm your AI coding assistant. I can help you with:\n- Writing and debugging code\n- Explaining programming concepts\n- Making API calls\n- Performing calculations\n\nHow can I help you today?",
+        "options": {
+          "allowFileUploads": false,
+          "loadPreviousSession": "memory",
+          "showWelcomeScreen": true,
+          "getStarted": "Start Coding",
+          "subtitle": "Your AI-powered coding companion with memory and tools",
+          "title": "AI Coding Agent",
+          "responseMode": "streaming"
+        }
+      },
+      "id": "1bd79993-9646-4016-831b-f5b702368e05",
+      "name": "Chat Interface",
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -224,
+        -304
+      ],
+      "webhookId": "41e43eb1-b3bf-4900-81d2-c24472b0893b"
+    },
+    {
+      "parameters": {
+        "contextWindowLength": 10
+      },
+      "id": "228bb0c6-b7c2-438d-95bd-8461b7f57258",
+      "name": "Conversation Memory",
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        -144,
+        -80
+      ]
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "You are an expert AI coding assistant with access to powerful tools. Your capabilities include:\n\n1. Calculator: Use this for mathematical operations and calculations\n2. Code Executor: Use this to run JavaScript code snippets and demonstrate examples\n3. API Request Tool: Use this to make HTTP requests to external APIs\n\nWhen helping users:\n- Provide clear, concise explanations\n- Show working code examples using the Code Executor tool\n- Break down complex concepts into simple steps\n- Use the Calculator for any mathematical operations\n- Make API calls when needed to fetch real-time data\n- Remember previous conversations to provide contextual help\n\nAlways be helpful, accurate, and educational in your responses.",
+          "maxIterations": 15,
+          "returnIntermediateSteps": false
+        }
+      },
+      "id": "6a44db35-b365-43bf-9b10-d9e529e16070",
+      "name": "AI Coding Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        256,
+        -304
+      ]
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-5-mini"
+        },
+        "builtInTools": {},
+        "options": {
+          "maxTokens": 4000
+        }
+      },
+      "id": "7ad340ed-3e7d-4348-9721-e0fc28d35c4c",
+      "name": "OpenAI GPT-5 Mini",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        128,
+        -80
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "5Fxpc99bsVca5h7T",
+          "name": "n8n free OpenAI API credits"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "id": "8d3ccfd1-30c2-400b-b60d-490b65be1a98",
+      "name": "Calculator",
+      "type": "@n8n/n8n-nodes-langchain.toolCalculator",
+      "typeVersion": 1,
+      "position": [
+        256,
+        -80
+      ]
+    },
+    {
+      "parameters": {
+        "description": "Executes JavaScript code snippets and returns the result. Useful for testing code, performing calculations, or manipulating data.",
+        "jsCode": "return query;"
+      },
+      "id": "696d5a81-34eb-4c00-9c62-068f46bebba7",
+      "name": "Code Executor",
+      "type": "@n8n/n8n-nodes-langchain.toolCode",
+      "typeVersion": 1.3,
+      "position": [
+        384,
+        -80
+      ]
+    },
+    {
+      "parameters": {
+        "url": "<__PLACEHOLDER_VALUE__API endpoint URL__>",
+        "options": {}
+      },
+      "id": "df912b39-3e00-43e0-9c76-5d8846698b85",
+      "name": "API Request Tool",
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.4,
+      "position": [
+        512,
+        -80
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Chat Interface": {
+      "main": [
+        [
+          {
+            "node": "AI Coding Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Conversation Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "Chat Interface",
+            "type": "ai_memory",
+            "index": 0
+          },
+          {
+            "node": "AI Coding Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI GPT-5 Mini": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Coding Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calculator": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Coding Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code Executor": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Coding Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "API Request Tool": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Coding Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "e3bf009b-706f-464d-a1f9-5cfbf890a3a7",
+  "meta": {
+    "instanceId": "783ba978b304df26155d24103ec01a81e5ad0bcacda9f87ac026cfc6448c03f9"
+  },
+  "id": "Oi7oeOvp4tWmYH1u",
+  "tags": []
+}
